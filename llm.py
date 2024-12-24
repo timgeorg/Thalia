@@ -15,6 +15,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'OpenVoice'))
 from openvoice import se_extractor
 from openvoice.api import BaseSpeakerTTS, ToneColorConverter
 import subprocess
+import numpy as np
 
 
 # Constants for colored text
@@ -190,10 +191,28 @@ def record_audio(file_path):
 
     print("Recording audio...")
 
+    silence_threshold = 500  # Adjust this threshold based on your environment
+    silence_duration = 3  # Duration of silence in seconds
+    silence_frames = int(16000 / 1024 * silence_duration)
+    silent_chunks = 0
+
     try:
         while True:
             data = stream.read(1024)
             frames.append(data)
+
+            # Convert audio data to numpy array
+            audio_data = np.frombuffer(data, dtype=np.int16)
+            # Check if the audio data is below the silence threshold
+            if np.abs(audio_data).mean() < silence_threshold:
+                silent_chunks += 1
+            else:
+                silent_chunks = 0
+
+            # Stop recording if silence duration is reached
+            if silent_chunks > silence_frames:
+                print("Silence detected. Stopping recording.")
+                break
     except KeyboardInterrupt:
         pass
     print("Recording stopped.")
@@ -214,16 +233,33 @@ async def user_chatbot_conversation():
     conversation_history = []
     system_message = open_file("system_message.txt")
     
+    paused = False
     while True:
-        play_audio("audio/start_recording.wav")
-        audio_file = "temp_recoding.wav"
-        record_audio(audio_file)
-        play_audio("audio/stop_recording.wav")
-        user_input = transcribe_with_whisper(audio_file)
-        os.remove(audio_file)
+        if not paused:
+            play_audio("audio/start_recording.wav")
+            audio_file = "temp_recording.wav"
+            record_audio(audio_file)
+            play_audio("audio/stop_recording.wav")
+            user_input = transcribe_with_whisper(audio_file)
+            os.remove(audio_file)
 
-        if "exit" in user_input.lower():
-            break
+            if "exit" in user_input.lower():
+                break
+            elif "pause" in user_input.lower():
+                paused = True
+                print("Conversation paused. Say 'resume' to continue.")
+                continue
+
+        if paused:
+            print("Press 'r' to resume or 'exit' to end the conversation.")
+            while True:
+                user_input = input().strip().lower()
+                if user_input == "r":
+                    paused = False
+                    print("Conversation resumed.")
+                    break
+                elif user_input == "exit":
+                    return
 
         print(CYAN + "You:", user_input + RESET_COLOR)
         conversation_history.append({"role": "user", "content": user_input})

@@ -4,3 +4,4 @@ OpenVoice/
 ChatTTS/
 checkpoints*/
 __pycache__/
+outputs/

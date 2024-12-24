@@ -1,0 +1,6 @@
+[submodule "ChatTTS"]
+    path = ChatTTS
+    url = <URL to ChatTTS repository>
+[submodule "OpenVoice"]
+    path = OpenVoice
+    url = <URL to OpenVoice repository>
