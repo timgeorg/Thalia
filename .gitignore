@@ -1,0 +1,6 @@
+.venv/
+.whisper/
+OpenVoice/
+ChatTTS/
+checkpoints*/
+__pycache__/
