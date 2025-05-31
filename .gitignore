@@ -1,9 +1,15 @@
-.venv/
+# Folders
 .whisper/
-OpenVoice/
+.venv/
 ChatTTS/
-checkpoints*/
+OpenVoice/
 __pycache__/
+build/
+checkpoints*/
+dist/
 outputs/
-*.wav
+
+# File types
 *.log
+*.wav
+*.spec
