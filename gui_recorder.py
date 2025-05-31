@@ -99,6 +99,7 @@ class AudioTranscriberApp:
 
     def transcribe_audio(self):
         print("Transcribing...")
+        # Model sizes: tiny, base, small, medium, large
         model = WhisperModel("base", device="cpu", compute_type="int8")
         segments, _ = model.transcribe(self.audio_path)
         self.transcription = " ".join([seg.text for seg in segments])
