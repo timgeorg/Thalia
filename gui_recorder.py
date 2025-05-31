@@ -1,3 +1,7 @@
+"""
+KORA: Recording Desktop Audio
+"""
+
 import tkinter as tk
 import threading
 import wave

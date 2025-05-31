@@ -96,7 +96,7 @@ def main():
         if not wait_for_button_press('space'):
             print("Goodbye!")
             break
- 
+
         play_sound(start_sound)
         audio_path = "temp_recording.wav"
         record_audio(audio_path)
