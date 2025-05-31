@@ -5,3 +5,4 @@ ChatTTS/
 checkpoints*/
 __pycache__/
 outputs/
+*.wav
