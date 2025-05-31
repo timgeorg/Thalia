@@ -1,3 +1,7 @@
+"""
+LYRA: Transcibing Microphone Audio
+"""
+
 import pyaudio
 import wave
 import numpy as np
