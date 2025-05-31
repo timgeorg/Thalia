@@ -96,11 +96,11 @@ def main():
         if not wait_for_button_press('space'):
             print("Goodbye!")
             break
-
+ 
         play_sound(start_sound)
         audio_path = "temp_recording.wav"
         record_audio(audio_path)
-        play_sound(stop_sound)
+        play_sound(stop_sound)  
 
         transcription = transcribe_audio(audio_path)
         pyperclip.copy(transcription)
