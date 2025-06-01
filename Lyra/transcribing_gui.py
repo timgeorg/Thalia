@@ -15,7 +15,7 @@ from tkinter import messagebox
 from threading import Thread
 
 # User Imports
-from logger import Logger
+from Lyra.logger import Logger
 
 is_recording = False
 transcription_text = ""
@@ -147,7 +147,11 @@ class Lyra(Logger):
         text_field.insert("1.0", text)
         text_field.config(state="disabled")
         tk.Button(popup, text="Copy to Clipboard", command=self.copy_to_clipboard).pack(pady=5)
-        tk.Button(popup, text="Close", command=popup.destroy).pack(pady=5)
+        def on_close():
+            self.logger.info("Transcription popup closed.")
+            popup.destroy()
+        tk.Button(popup, text="Close", command=on_close).pack(pady=5)
+        popup.protocol("WM_DELETE_WINDOW", on_close)
 
 
     def copy_to_clipboard(self):
@@ -161,4 +165,11 @@ if __name__ == "__main__":
     lyra = Lyra(root)
     root.mainloop()
 
-# pyinstaller build command: pyinstaller --onefile --windowed transcribing_gui.py
+# pyinstaller build command: pyinstaller --onefile transcribing_gui.py
+
+"""
+AttributeError: 'NoneType' object has no attribute 'flush'
+✅ Root Cause
+PyInstaller sometimes doesn't initialize sys.stderr (or sys.stdout) correctly when used with --noconsole (--windowed) mode — 
+especially when used with packages like transformers or faster-whisper, which try to configure logging early.
+"""
